@@ -35,22 +35,10 @@ func Read() Config {
 }
 
 func (c *Config) SetUser(current_user string) {
-	p, err := getConfigFilePath()
-	if err != nil {
+	c.CurrentUserName = current_user
+	if err := write(*c); err != nil {
 		panic(err)
 	}
-
-	cfgFile, err := os.Open(p)
-	if err != nil {
-		panic(err)
-	}
-
-	defer cfgFile.Close()
-
-	if err := json.NewEncoder(cfgFile).Encode(c); err != nil {
-		panic(err)
-	}
-
 }
 
 func getConfigFilePath() (string, error) {
@@ -63,5 +51,20 @@ func getConfigFilePath() (string, error) {
 }
 
 func write(cfg Config) error {
+	p, err := getConfigFilePath()
+	if err != nil {
+		return (err)
+	}
+
+	cfgFile, err := os.Open(p)
+	if err != nil {
+		return (err)
+	}
+
+	defer cfgFile.Close()
+
+	if err := json.NewEncoder(cfgFile).Encode(cfg); err != nil {
+		return (err)
+	}
 	return nil
 }
