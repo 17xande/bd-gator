@@ -7,8 +7,18 @@ import (
 )
 
 func main() {
-	cfg := config.Read()
-	cfg.SetUser("lane")
-	cfg = config.Read()
+	cfg, err := config.Read()
+	if err != nil {
+		panic(err)
+	}
+
+	err = cfg.SetUser("lane")
+	if err != nil {
+		panic(err)
+	}
+	cfg, err = config.Read()
+	if err != nil {
+		panic(err)
+	}
 	fmt.Printf("%v\n", cfg)
 }
