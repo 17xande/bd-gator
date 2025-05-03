@@ -7,3 +7,7 @@ values (
   $4
 )
 returning *;
+
+-- name: GetUser :one
+select * from users
+where name = $1;
