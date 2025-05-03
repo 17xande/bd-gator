@@ -28,6 +28,24 @@ func handlerLogin(s *state, cmd command) error {
 	return nil
 }
 
+func handlerUsers(s *state, cmd command) error {
+	users, err := s.db.GetUsers(context.Background())
+	if err != nil {
+		return fmt.Errorf("error getting all users: %w", err)
+
+	}
+
+	for _, u := range users {
+		current := ""
+		if s.config.CurrentUserName == u.Name {
+			current = " (current)"
+		}
+		fmt.Printf(" * %s%s\n", u.Name, current)
+	}
+
+	return nil
+}
+
 func handlerRegister(s *state, cmd command) error {
 	if len(cmd.args) != 1 {
 		return fmt.Errorf("supply username as argument to this command")
