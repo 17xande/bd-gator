@@ -1,13 +1,12 @@
 -- +goose Up
-create table feeds (
+create table feed_follows (
   id uuid not null DEFAULT gen_random_uuid(),
   created_at timestamp not null,
   updated_at timestamp not null,
-  name varchar not null,
-  url varchar not null unique,
   user_id uuid not null references users(id) on delete cascade,
-  primary key(id)
+  feed_id uuid not null references feeds(id) on delete cascade,
+  unique(user_id, feed_id)
 );
 
 -- +goose Down
-drop table feeds;
+drop table feed_follows;

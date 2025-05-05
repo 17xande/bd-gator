@@ -11,7 +11,7 @@ import (
 
 func handlerAddFeed(s *state, cmd command) error {
 	if len(cmd.args) != 2 {
-		return fmt.Errorf("usage: %s <name> <url>", cmd.name)
+		return fmt.Errorf("usage: %s <feed_name> <url>", cmd.name)
 	}
 
 	user, err := s.db.GetUser(context.Background(), s.config.CurrentUserName)
@@ -32,6 +32,19 @@ func handlerAddFeed(s *state, cmd command) error {
 		return fmt.Errorf("can't create feed in database: %w", err)
 	}
 
+	paramsFollow := database.CreateFeedFollowParams{
+		ID:        uuid.New(),
+		CreatedAt: time.Now(),
+		UpdatedAt: time.Now(),
+		UserID:    user.ID,
+		FeedID:    feed.ID,
+	}
+
+	_, err = s.db.CreateFeedFollow(context.Background(), paramsFollow)
+
+	if err != nil {
+		return fmt.Errorf("can't create feed follow: %w", err)
+	}
 	fmt.Println("Feed created successfully:")
 	printFeed(feed)
 	fmt.Println()
