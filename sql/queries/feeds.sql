@@ -21,3 +21,14 @@ delete from feeds;
 select feeds.id, feeds.created_at, feeds.updated_at, feeds.name, feeds.url, feeds.user_id, users.name as user_name
 from feeds
 inner join users on users.id = feeds.user_id;
+
+-- name: MarkFeedFetched :exec
+UPDATE feeds
+  SET last_fetched_at = current_timestamp, updated_at = current_timestamp
+  WHERE id = $1;
+
+-- name: GetNextFeedToFetch :one
+select * from feeds
+order by last_fetched_at desc
+nulls first
+limit 1;
